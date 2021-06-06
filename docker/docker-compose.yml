@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  storeservice:
+    container_name: storeservice
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.storeservice.hackaton
+    env_file:
+      - ../.env
+    ports:
+      - ${STORE_PORT}:${STORE_PORT}
+    depends_on:
+      - storeservice_db
+
+  storeservice_db:
+    image: mysql:8.0
+    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci', "--init-connect='SET NAMES utf8mb4;'"]
+    container_name: storeservice_db
+    restart: always
+    env_file:
+      - ../.env
+    environment:
+      MYSQL_DATABASE: ${STORE_DATABASE_NAME}
+      MYSQL_USER: ${STORE_DATABASE_USER}
+      MYSQL_PASSWORD: ${STORE_DATABASE_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${STORE_ROOT_PASSWORD}
+    ports:
+      - 3371:3306
+    volumes:
+      - ../../var/storeservice/database:/var/lib/mysql

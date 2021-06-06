@@ -1,0 +1,7 @@
+FROM debian
+
+ADD ./bin/storeservice /app/bin/storeservice
+RUN chmod +x /app/bin/storeservice
+WORKDIR /app
+
+CMD ["/app/bin/storeservice"]
