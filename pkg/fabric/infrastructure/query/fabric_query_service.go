@@ -62,9 +62,9 @@ func getSelectOrderSQL() string {
 	return "" +
 		`SELECT
 		   BIN_TO_UUID(f.id) AS id,
-           o.name AS name,
-           o.amount AS amount
-           o.cost AS cost
+           f.name AS name,
+           f.amount AS amount
+           f.cost AS cost
 		FROM fabric f`
 }
 
