@@ -28,9 +28,9 @@ func Router(db *sql.DB) http.Handler {
 	r := mux.NewRouter()
 
 	s := r.PathPrefix("/api/v1").Subrouter()
-	s.HandleFunc("/order", srv.addFabric).Methods(http.MethodPost)
-	s.HandleFunc("/order}", srv.updateFabric).Methods(http.MethodPut)
-	s.HandleFunc("/order/{ID:[0-9a-zA-Z-]+}", srv.getFabrics).Methods(http.MethodGet)
+	s.HandleFunc("/fabric", srv.addFabric).Methods(http.MethodPost)
+	s.HandleFunc("/fabric}", srv.updateFabric).Methods(http.MethodPut)
+	s.HandleFunc("/fabric/{ID:[0-9a-zA-Z-]+}", srv.getFabrics).Methods(http.MethodGet)
 	return cmd.LogMiddleware(r)
 }
 
