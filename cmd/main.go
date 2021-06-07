@@ -7,6 +7,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"storeservice/pkg/common/cmd"
+	"storeservice/pkg/fabric/infrastructure/transport"
 )
 
 const appID = "orderService"
