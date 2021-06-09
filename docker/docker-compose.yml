@@ -5,7 +5,7 @@ services:
     container_name: storeservice
     build:
       context: ../
-      dockerfile: docker/Dockerfile.storeservice.hackaton
+      dockerfile: docker/Dockerfile.storeservice
     env_file:
       - ../.env
     ports:
@@ -22,9 +22,7 @@ services:
       - ../.env
     environment:
       MYSQL_DATABASE: ${STORE_DATABASE_NAME}
-      MYSQL_USER: ${STORE_DATABASE_USER}
-      MYSQL_PASSWORD: ${STORE_DATABASE_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${STORE_ROOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${STORE_DATABASE_PASSWORD}
     ports:
       - 3371:3306
     volumes:

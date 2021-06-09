@@ -1,5 +1,5 @@
-ifneq (,$(wildcard ./docker/.env))
-    include docker/.env
+ifneq (,$(wildcard ./.env))
+    include .env
     export
 endif
 
@@ -23,3 +23,6 @@ down:
 
 db:
 	mysql -h 127.0.0.1 -u $(STORE_DATABASE_USER) -p$(STORE_DATABASE_PASSWORD) $(STORE_DATABASE_NAME)
+
+migrate:
+	migrate -database "$(STORE_DATABASE_DRIVER)://$(STORE_DATABASE_USER):$(STORE_DATABASE_PASSWORD)@tcp(localhost:3371)/$(STORE_DATABASE_NAME)" -path ./migrations up
