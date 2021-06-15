@@ -29,6 +29,9 @@ func (h *updateFabricCommandHandler) Handle(c UpdateFabricCommand) error {
 	err := h.unitOfWork.Execute(func(rp model.FabricRepository) error {
 
 		fabric, err := rp.Get(c.ID)
+		if err != nil {
+			return err
+		}
 		if fabric == nil {
 			return errors.FabricNotExistError
 		}

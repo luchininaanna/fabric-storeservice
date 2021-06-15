@@ -9,7 +9,7 @@ import (
 func TestUpdateNotExistingFabric(t *testing.T) {
 	uow := &mockUnitOfWork{}
 	h := updateFabricCommandHandler{uow}
-	_, err := h.Handle(UpdateFabricCommand{
+	err := h.Handle(UpdateFabricCommand{
 		uuid.New(),
 		"silk",
 		77,

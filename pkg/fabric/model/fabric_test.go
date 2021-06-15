@@ -35,7 +35,7 @@ func TestCreateFabricWithBelowZeroCost(t *testing.T) {
 
 func TestCreateOrderItemWithZeroCost(t *testing.T) {
 	_, err := NewFabric(uuid.New(), "cotton", 0, 5)
-	if err != FabricWithoutNameError {
-		t.Error("Create fabric with zero quantity")
+	if err != InvalidFabricCostError {
+		t.Error("Create fabric with zero cost")
 	}
 }

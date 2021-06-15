@@ -3,6 +3,7 @@ package query
 import (
 	"database/sql"
 	"storeservice/pkg/common/infrastructure"
+	"storeservice/pkg/fabric/application/errors"
 	"storeservice/pkg/fabric/application/query"
 	"storeservice/pkg/fabric/application/query/data"
 )
@@ -34,7 +35,7 @@ func (qs *fabricQueryService) GetFabric(id string) (*data.FabricData, error) {
 		return fabric, nil
 	}
 
-	return nil, nil // not found
+	return nil, errors.FabricNotExistError
 }
 
 func (qs *fabricQueryService) GetFabrics() ([]data.FabricData, error) {
@@ -55,12 +56,11 @@ func (qs *fabricQueryService) GetFabrics() ([]data.FabricData, error) {
 		fabrics = append(fabrics, *fabric)
 	}
 
-	return fabrics, nil // not found
+	return fabrics, nil
 }
 
 func getSelectOrderSQL() string {
-	return "" +
-		`SELECT
+	return `SELECT
 		   BIN_TO_UUID(f.id) AS id,
            f.name AS name,
            f.amount AS amount
