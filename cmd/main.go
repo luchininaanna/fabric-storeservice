@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/kelseyhightower/envconfig"
 	log "github.com/sirupsen/logrus"
 	"net/http"
@@ -10,7 +11,7 @@ import (
 	"storeservice/pkg/fabric/infrastructure/transport"
 )
 
-const appID = "storeService"
+const appID = "store"
 
 type config struct {
 	cmd.WebConfig

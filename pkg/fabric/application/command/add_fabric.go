@@ -3,6 +3,7 @@ package command
 import (
 	"github.com/google/uuid"
 	"storeservice/pkg/fabric/model"
+	"time"
 )
 
 type AddFabricCommand struct {
@@ -27,10 +28,12 @@ func (h *addFabricCommandHandler) Handle(c AddFabricCommand) (*uuid.UUID, error)
 	var orderId *uuid.UUID
 	err := h.unitOfWork.Execute(func(rp model.FabricRepository) error {
 
-		order, err := model.NewFabric(uuid.New(), c.Name, c.Cost, c.Amount)
+		order, err := model.NewFabric(uuid.New(), c.Name, c.Cost, c.Amount, time.Now(), nil)
 		if err != nil {
 			return err
 		}
+
+		orderId = &order.ID
 
 		return rp.Store(order)
 	})

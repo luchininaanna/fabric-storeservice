@@ -13,12 +13,12 @@ func (m *mockUnitOfWork) Execute(f func(rp model.FabricRepository) error) error 
 	return f(m)
 }
 
-func (m *mockUnitOfWork) Store(o model.Fabric) error {
+func (m *mockUnitOfWork) Store(f model.Fabric) error {
 	if m.fabrics == nil {
 		m.fabrics = make(map[string]model.Fabric)
 	}
 
-	m.fabrics[o.ID.String()] = o
+	m.fabrics[f.ID.String()] = f
 	return nil
 }
 

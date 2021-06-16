@@ -4,6 +4,7 @@ import (
 	"github.com/google/uuid"
 	"storeservice/pkg/fabric/application/errors"
 	"storeservice/pkg/fabric/model"
+	"time"
 )
 
 type UpdateFabricCommand struct {
@@ -36,12 +37,13 @@ func (h *updateFabricCommandHandler) Handle(c UpdateFabricCommand) error {
 			return errors.FabricNotExistError
 		}
 
-		order, err := model.NewFabric(c.ID, c.Name, c.Cost, c.Amount)
-		if err != nil {
-			return err
-		}
+		t := time.Now()
+		fabric.UpdatedAt = &t
+		fabric.Name = c.Name
+		fabric.Cost = c.Cost
+		fabric.Amount = c.Amount
 
-		return rp.Store(order)
+		return rp.Store(*fabric)
 	})
 
 	return err
