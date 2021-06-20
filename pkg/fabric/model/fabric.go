@@ -8,8 +8,8 @@ import (
 type Fabric struct {
 	ID        uuid.UUID
 	Name      string
-	Cost      int
-	Amount    int
+	Cost      float32
+	Amount    float32
 	CreatedAt time.Time
 	UpdatedAt *time.Time
 }
@@ -19,7 +19,7 @@ type FabricRepository interface {
 	Get(fabricUuid uuid.UUID) (*Fabric, error)
 }
 
-func NewFabric(fabricUuid uuid.UUID, name string, cost int, amount int, createdAt time.Time, updatedAt *time.Time) (Fabric, error) {
+func NewFabric(fabricUuid uuid.UUID, name string, cost float32, amount float32, createdAt time.Time, updatedAt *time.Time) (Fabric, error) {
 
 	if name == "" {
 		return Fabric{}, FabricWithoutNameError

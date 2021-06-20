@@ -8,8 +8,8 @@ import (
 
 type AddFabricCommand struct {
 	Name   string
-	Amount int
-	Cost   int
+	Amount float32
+	Cost   float32
 }
 
 type addFabricCommandHandler struct {
@@ -25,18 +25,18 @@ func NewAddFabricCommandHandler(unitOfWork UnitOfWork) AddFabricCommandHandler {
 }
 
 func (h *addFabricCommandHandler) Handle(c AddFabricCommand) (*uuid.UUID, error) {
-	var orderId *uuid.UUID
+	var fabricId *uuid.UUID
 	err := h.unitOfWork.Execute(func(rp model.FabricRepository) error {
 
-		order, err := model.NewFabric(uuid.New(), c.Name, c.Cost, c.Amount, time.Now(), nil)
+		fabric, err := model.NewFabric(uuid.New(), c.Name, c.Cost, c.Amount, time.Now(), nil)
 		if err != nil {
 			return err
 		}
 
-		orderId = &order.ID
+		fabricId = &fabric.ID
 
-		return rp.Store(order)
+		return rp.Store(fabric)
 	})
 
-	return orderId, err
+	return fabricId, err
 }

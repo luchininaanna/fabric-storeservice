@@ -6,6 +6,7 @@ import (
 	"storeservice/pkg/fabric/application/errors"
 	"storeservice/pkg/fabric/application/query"
 	"storeservice/pkg/fabric/application/query/data"
+	"time"
 )
 
 func NewFabricQueryService(db *sql.DB) query.FabricQueryService {
@@ -18,7 +19,7 @@ type fabricQueryService struct {
 
 func (qs *fabricQueryService) GetFabric(id string) (*data.FabricData, error) {
 	rows, err := qs.db.Query(""+
-		getSelectOrderSQL()+
+		getSelectFabricSQL()+
 		"WHERE f.id = UUID_TO_BIN(?)", id)
 
 	if err != nil {
@@ -39,7 +40,7 @@ func (qs *fabricQueryService) GetFabric(id string) (*data.FabricData, error) {
 }
 
 func (qs *fabricQueryService) GetFabrics() ([]data.FabricData, error) {
-	rows, err := qs.db.Query(getSelectOrderSQL())
+	rows, err := qs.db.Query(getSelectFabricSQL())
 
 	if err != nil {
 		return nil, infrastructure.InternalError(err)
@@ -47,7 +48,7 @@ func (qs *fabricQueryService) GetFabrics() ([]data.FabricData, error) {
 	defer infrastructure.CloseRows(rows)
 
 	var fabrics []data.FabricData
-	if rows.Next() {
+	for rows.Next() {
 		fabric, err := parseFabric(rows)
 		if err != nil {
 			return nil, infrastructure.InternalError(err)
@@ -59,30 +60,41 @@ func (qs *fabricQueryService) GetFabrics() ([]data.FabricData, error) {
 	return fabrics, nil
 }
 
-func getSelectOrderSQL() string {
+func getSelectFabricSQL() string {
 	return `SELECT
 		   BIN_TO_UUID(f.id) AS id,
            f.name AS name,
-           f.amount AS amount
-           f.cost AS cost
+           f.amount AS amount,
+           f.cost AS cost,
+           f.created_at AS created_at,
+		   f.updated_at AS updated_at
 		FROM fabric f`
 }
 
 func parseFabric(r *sql.Rows) (*data.FabricData, error) {
 	var fabricId string
 	var name string
-	var amount int
-	var cost int
+	var amount float32
+	var cost float32
+	var createdAt time.Time
+	var updatedAtNullable sql.NullTime
 
-	err := r.Scan(&fabricId, &name, &amount, &cost)
+	err := r.Scan(&fabricId, &name, &amount, &cost, &createdAt, &updatedAtNullable)
 	if err != nil {
 		return nil, err
 	}
 
+	var updatedAt *time.Time
+	if updatedAtNullable.Valid {
+		updatedAt = &updatedAtNullable.Time
+	}
+
 	return &data.FabricData{
-		ID:     fabricId,
-		Name:   name,
-		Amount: amount,
-		Cost:   cost,
+		ID:        fabricId,
+		Name:      name,
+		Amount:    amount,
+		Cost:      cost,
+		CreatedAt: createdAt,
+		UpdatedAt: updatedAt,
 	}, nil
 }

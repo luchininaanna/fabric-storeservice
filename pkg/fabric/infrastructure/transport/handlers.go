@@ -31,21 +31,21 @@ func Router(db *sql.DB) http.Handler {
 	s := r.PathPrefix("/api/v1").Subrouter()
 	s.HandleFunc("/fabric", srv.addFabric).Methods(http.MethodPost)
 	s.HandleFunc("/fabric", srv.updateFabric).Methods(http.MethodPut)
-	s.HandleFunc("/fabric/{ID:[0-9a-zA-Z-]+}", srv.getFabrics).Methods(http.MethodGet)
+	s.HandleFunc("/fabrics", srv.getFabrics).Methods(http.MethodGet)
 	return cmd.LogMiddleware(r)
 }
 
 type addFabricRequest struct {
-	Name   string `json:"name"`
-	Amount int    `json:"amount"`
-	Cost   int    `json:"cost"`
+	Name   string  `json:"name"`
+	Amount float32 `json:"amount"`
+	Cost   float32 `json:"cost"`
 }
 
 type updateFabricRequest struct {
-	ID     string `json:"ID"`
-	Name   string `json:"name"`
-	Amount int    `json:"amount"`
-	Cost   int    `json:"cost"`
+	ID     string  `json:"ID"`
+	Name   string  `json:"name"`
+	Amount float32 `json:"amount"`
+	Cost   float32 `json:"cost"`
 }
 
 type addFabricResponse struct {
@@ -91,7 +91,7 @@ func (s *server) updateFabric(w http.ResponseWriter, r *http.Request) {
 		log.Error("Can't read request body with error")
 	}
 
-	defer r.Body.Close()
+	defer infrastructure.LogError(r.Body.Close())
 
 	var request updateFabricRequest
 	err = json.Unmarshal(b, &request)

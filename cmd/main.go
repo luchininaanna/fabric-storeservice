@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/kelseyhightower/envconfig"
 	log "github.com/sirupsen/logrus"
 	"net/http"

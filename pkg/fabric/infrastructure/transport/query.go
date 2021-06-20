@@ -8,13 +8,13 @@ import (
 )
 
 type fabricResponse struct {
-	FabricId string `json:"fabric_id"`
-	Name     string `json:"name"`
-	Amount   int    `json:"amount"`
-	Cost     int    `json:"cost"`
+	FabricId string  `json:"fabric_id"`
+	Name     string  `json:"name"`
+	Amount   float32 `json:"amount"`
+	Cost     float32 `json:"cost"`
 }
 
-func (s *server) getFabrics(w http.ResponseWriter, r *http.Request) {
+func (s *server) getFabrics(w http.ResponseWriter, _ *http.Request) {
 	fabrics, err := s.fqs.GetFabrics()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)

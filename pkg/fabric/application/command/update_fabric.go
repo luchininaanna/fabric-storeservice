@@ -10,8 +10,8 @@ import (
 type UpdateFabricCommand struct {
 	ID     uuid.UUID
 	Name   string
-	Cost   int
-	Amount int
+	Cost   float32
+	Amount float32
 }
 
 type updateFabricCommandHandler struct {
