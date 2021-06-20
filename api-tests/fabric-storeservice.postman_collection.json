@@ -16,10 +16,10 @@
 							"    pm.response.to.have.status(200);",
 							"});",
 							"",
-							"pm.test(\"Your test name\", function () {",
+							"pm.test(\"Create fabric\", function () {",
 							"    var jsonData = pm.response.json();",
 							"    pm.expect(jsonData.id).to.be.an('string');",
-							"    pm.globals.set('lastAddedFabric', jsonData.id)",
+							"    pm.globals.set('lastAddedFabricId', jsonData.id)",
 							"});"
 						],
 						"type": "text/javascript"
@@ -31,7 +31,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"name\": \"silk\",\n  \"amount\": 13,\n  \"cost\":   4970\n}",
+					"raw": "{\n  \"name\": \"silk\",\n  \"amount\": 13.5,\n  \"cost\": 4970\n}",
 					"options": {
 						"raw": {
 							"language": "text"
@@ -156,7 +156,7 @@
 							"    var lastAddedFabricExist = false;",
 							"    for (key in jsonData) {",
 							"        var fabric = jsonData[key];",
-							"        if (fabric.fabric_id == pm.globals.get(\"lastAddedFabric\")) {",
+							"        if (fabric.fabric_id == pm.globals.get(\"lastAddedFabricId\")) {",
 							"            lastAddedFabricExist = true;",
 							"        }",
 							"    }",
