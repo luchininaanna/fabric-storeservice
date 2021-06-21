@@ -21,20 +21,6 @@ type server struct {
 	fqs        query.FabricQueryService
 }
 
-func Router(db *sql.DB) http.Handler {
-	srv := &server{
-		repository.NewUnitOfWork(db),
-		queryImpl.NewFabricQueryService(db),
-	}
-	r := mux.NewRouter()
-
-	s := r.PathPrefix("/api/v1").Subrouter()
-	s.HandleFunc("/fabric", srv.addFabric).Methods(http.MethodPost)
-	s.HandleFunc("/fabric", srv.updateFabric).Methods(http.MethodPut)
-	s.HandleFunc("/fabrics", srv.getFabrics).Methods(http.MethodGet)
-	return cmd.LogMiddleware(r)
-}
-
 type addFabricRequest struct {
 	Name   string  `json:"name"`
 	Amount float32 `json:"amount"`
@@ -50,6 +36,20 @@ type updateFabricRequest struct {
 
 type addFabricResponse struct {
 	Id string `json:"id"`
+}
+
+func Router(db *sql.DB) http.Handler {
+	srv := &server{
+		repository.NewUnitOfWork(db),
+		queryImpl.NewFabricQueryService(db),
+	}
+	r := mux.NewRouter()
+
+	s := r.PathPrefix("/api/v1").Subrouter()
+	s.HandleFunc("/fabric", srv.addFabric).Methods(http.MethodPost)
+	s.HandleFunc("/fabric", srv.updateFabric).Methods(http.MethodPut)
+	s.HandleFunc("/fabrics", srv.getFabrics).Methods(http.MethodGet)
+	return cmd.LogMiddleware(r)
 }
 
 func (s *server) addFabric(w http.ResponseWriter, r *http.Request) {

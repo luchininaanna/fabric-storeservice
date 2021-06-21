@@ -141,7 +141,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Fabrics",
+			"name": "GetFabrics",
 			"event": [
 				{
 					"listen": "test",
