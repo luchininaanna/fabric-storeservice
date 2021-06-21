@@ -3,7 +3,7 @@ ifneq (,$(wildcard ./.env))
     export
 endif
 
-build: fmt lint test
+build: modules fmt lint test
 	go build -o ./bin/storeservice cmd/main.go
 	docker-compose -f docker/docker-compose.yml build
 
@@ -33,3 +33,6 @@ migrate_down:
 
 logs:
 	docker-compose -f docker/docker-compose.yml logs
+
+modules:
+	go mod tidy

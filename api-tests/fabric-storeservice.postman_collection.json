@@ -151,7 +151,7 @@
 							"    pm.response.to.have.status(200);",
 							"});",
 							"",
-							"pm.test(\"Your test name\", function () {",
+							"pm.test(\"Get fabrics\", function () {",
 							"    var jsonData = pm.response.json();",
 							"    var lastAddedFabricExist = false;",
 							"    for (key in jsonData) {",
