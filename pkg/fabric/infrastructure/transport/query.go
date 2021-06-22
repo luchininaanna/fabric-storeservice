@@ -14,6 +14,10 @@ type fabricResponse struct {
 	Cost     float32 `json:"cost"`
 }
 
+type fabricsResponse struct {
+	Fabrics []fabricResponse `json:"fabrics"`
+}
+
 func (s *server) getFabrics(w http.ResponseWriter, _ *http.Request) {
 	fabrics, err := s.fqs.GetFabrics()
 	if err != nil {
@@ -21,9 +25,9 @@ func (s *server) getFabrics(w http.ResponseWriter, _ *http.Request) {
 		return
 	}
 
-	var fabricsResponse []fabricResponse
+	var fabricsResponseList []fabricResponse
 	for _, fabric := range fabrics {
-		fabricsResponse = append(fabricsResponse, fabricResponse{
+		fabricsResponseList = append(fabricsResponseList, fabricResponse{
 			FabricId: fabric.ID,
 			Name:     fabric.Name,
 			Amount:   fabric.Amount,
@@ -31,7 +35,9 @@ func (s *server) getFabrics(w http.ResponseWriter, _ *http.Request) {
 		})
 	}
 
-	jsonFabrics, err := json.Marshal(fabricsResponse)
+	jsonFabrics, err := json.Marshal(fabricsResponse{
+		Fabrics: fabricsResponseList,
+	})
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
