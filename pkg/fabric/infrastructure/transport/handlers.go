@@ -28,7 +28,7 @@ type addFabricRequest struct {
 }
 
 type updateFabricRequest struct {
-	ID     string  `json:"ID"`
+	ID     string  `json:"id"`
 	Name   string  `json:"name"`
 	Amount float32 `json:"amount"`
 	Cost   float32 `json:"cost"`

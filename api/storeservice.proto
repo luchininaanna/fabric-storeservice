@@ -40,7 +40,7 @@ message AddFabricResponse {
 }
 
 message UpdateFabricRequest {
-  string ID = 1;
+  string id = 1;
   string name = 2;
   float amount = 3;
   float cost = 4;

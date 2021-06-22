@@ -74,7 +74,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"ID\": \"{{lastAddedFabric}}\",\n  \"name\": \"koil\",\n  \"amount\": 17,\n  \"cost\": 970\n}",
+					"raw": "{\n  \"id\": \"{{lastAddedFabric}}\",\n  \"name\": \"koil\",\n  \"amount\": 17,\n  \"cost\": 970\n}",
 					"options": {
 						"raw": {
 							"language": "text"
@@ -117,7 +117,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"ID\": \"4a05a297-b7d7-40dc-a2c9-6f58b11fc723\",\n  \"name\": \"cotton\",\n  \"amount\": 17.9,\n  \"cost\": 970\n}",
+					"raw": "{\n  \"id\": \"4a05a297-b7d7-40dc-a2c9-6f58b11fc723\",\n  \"name\": \"cotton\",\n  \"amount\": 17.9,\n  \"cost\": 970\n}",
 					"options": {
 						"raw": {
 							"language": "text"
