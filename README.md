@@ -7,7 +7,7 @@
 
 ## Диаграмма use-case
 Возможности пользователей в данном приложении отображены на следующей диаграмме.
-![Use-case diagram](/fabric-storeservice/diagrams/use_case.png)
+![Use-case diagram](/diagrams/use_case.png)
 
 ## Структура приложения
 В данном приложении можно выделить 2 микросервиса:
