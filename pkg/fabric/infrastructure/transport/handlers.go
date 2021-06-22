@@ -72,11 +72,11 @@ func (s *server) GetFabrics(_ context.Context, empty *empty.Empty) (*storeservic
 		})
 	}
 
-	df := storeservice.FabricsResponse{
+	response := storeservice.FabricsResponse{
 		Fabrics: fabricsResponseList,
 	}
 
-	return &df, nil
+	return &response, nil
 }
 
 func Router(db *sql.DB) http.Handler {
