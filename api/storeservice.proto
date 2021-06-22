@@ -7,7 +7,7 @@ option go_package = "./;storeservice";
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 
-service OrderService {
+service StoreService {
   rpc AddFabric(AddFabricRequest) returns (AddFabricResponse) {
     option (google.api.http) = {
       post: "/api/v1/fabric"
@@ -17,7 +17,7 @@ service OrderService {
 
   rpc UpdateFabric(UpdateFabricRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/api/v1/fabric"
+      put: "/api/v1/fabric"
       body: "*"
     };
   }
@@ -47,12 +47,12 @@ message UpdateFabricRequest {
 }
 
 message FabricsResponse {
-  message Fabric {
+  message FabricResponse {
     string fabric_id = 1;
     string name = 2;
     float amount = 3;
     float cost = 4;
   }
 
-  repeated Fabric fabrics = 1;
+  repeated FabricResponse fabrics = 1;
 }

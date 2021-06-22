@@ -3,7 +3,7 @@ ifneq (,$(wildcard ./.env))
     export
 endif
 
-build: modules fmt lint test
+build: modules fmt lint test proto
 	go build -o ./bin/storeservice cmd/main.go
 	docker-compose -p storeservice -f docker/docker-compose.yml build
 

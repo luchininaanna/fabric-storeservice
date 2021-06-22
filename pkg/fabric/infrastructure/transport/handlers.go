@@ -1,15 +1,15 @@
 package transport
 
 import (
+	"context"
 	"database/sql"
-	"encoding/json"
+	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/google/uuid"
-	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
-	"io/ioutil"
 	"net/http"
+	storeservice "storeservice/api"
 	"storeservice/pkg/common/cmd"
-	"storeservice/pkg/common/infrastructure"
+	"storeservice/pkg/common/infrastructure/transport"
 	"storeservice/pkg/fabric/application/command"
 	"storeservice/pkg/fabric/application/query"
 	queryImpl "storeservice/pkg/fabric/infrastructure/query"
@@ -21,55 +21,7 @@ type server struct {
 	fqs        query.FabricQueryService
 }
 
-type addFabricRequest struct {
-	Name   string  `json:"name"`
-	Amount float32 `json:"amount"`
-	Cost   float32 `json:"cost"`
-}
-
-type updateFabricRequest struct {
-	ID     string  `json:"id"`
-	Name   string  `json:"name"`
-	Amount float32 `json:"amount"`
-	Cost   float32 `json:"cost"`
-}
-
-type addFabricResponse struct {
-	Id string `json:"id"`
-}
-
-func Router(db *sql.DB) http.Handler {
-	srv := &server{
-		repository.NewUnitOfWork(db),
-		queryImpl.NewFabricQueryService(db),
-	}
-	r := mux.NewRouter()
-
-	s := r.PathPrefix("/api/v1").Subrouter()
-	s.HandleFunc("/fabric", srv.addFabric).Methods(http.MethodPost)
-	s.HandleFunc("/fabric", srv.updateFabric).Methods(http.MethodPut)
-	s.HandleFunc("/fabrics", srv.getFabrics).Methods(http.MethodGet)
-	return cmd.LogMiddleware(r)
-}
-
-func (s *server) addFabric(w http.ResponseWriter, r *http.Request) {
-	b, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		log.Error("Can't read request body with error")
-		return
-	}
-
-	defer infrastructure.LogError(r.Body.Close())
-
-	var request addFabricRequest
-	err = json.Unmarshal(b, &request)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		log.Error("Can't parse json response with error")
-		return
-	}
-
+func (s *server) AddFabric(_ context.Context, request *storeservice.AddFabricRequest) (*storeservice.AddFabricResponse, error) {
 	var h = command.NewAddFabricCommandHandler(s.unitOfWork)
 	id, err := h.Handle(command.AddFabricCommand{
 		Name:   request.Name,
@@ -77,32 +29,16 @@ func (s *server) addFabric(w http.ResponseWriter, r *http.Request) {
 		Cost:   request.Cost,
 	})
 	if err != nil {
-		http.Error(w, WrapError(err).Error(), http.StatusBadRequest)
-		return
+		return nil, err
 	}
 
-	RenderJson(w, &addFabricResponse{id.String()})
+	return &storeservice.AddFabricResponse{Id: id.String()}, nil
 }
 
-func (s *server) updateFabric(w http.ResponseWriter, r *http.Request) {
-	b, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		log.Error("Can't read request body with error")
-	}
-
-	defer infrastructure.LogError(r.Body.Close())
-
-	var request updateFabricRequest
-	err = json.Unmarshal(b, &request)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		log.Error("Can't parse json response with error")
-	}
-
+func (s *server) UpdateFabric(_ context.Context, request *storeservice.UpdateFabricRequest) (*empty.Empty, error) {
 	var h = command.NewUpdateFabricCommandHandler(s.unitOfWork)
 
-	fabricUid, err := uuid.Parse(request.ID)
+	fabricUid, err := uuid.Parse(request.Id)
 	if err != nil {
 		log.Error("Can't parse fabric uid")
 	}
@@ -114,7 +50,46 @@ func (s *server) updateFabric(w http.ResponseWriter, r *http.Request) {
 		Amount: request.Amount,
 	})
 	if err != nil {
-		http.Error(w, WrapError(err).Error(), http.StatusBadRequest)
-		return
+		return nil, err
 	}
+
+	return &empty.Empty{}, nil
+}
+
+func (s *server) GetFabrics(_ context.Context, empty *empty.Empty) (*storeservice.FabricsResponse, error) {
+	fabrics, err := s.fqs.GetFabrics()
+	if err != nil {
+		return nil, err
+	}
+
+	var fabricsResponseList []*storeservice.FabricsResponse_FabricResponse
+	for _, fabric := range fabrics {
+		fabricsResponseList = append(fabricsResponseList, &storeservice.FabricsResponse_FabricResponse{
+			FabricId: fabric.ID,
+			Name:     fabric.Name,
+			Amount:   fabric.Amount,
+			Cost:     fabric.Cost,
+		})
+	}
+
+	df := storeservice.FabricsResponse{
+		Fabrics: fabricsResponseList,
+	}
+
+	return &df, nil
+}
+
+func Router(db *sql.DB) http.Handler {
+	srv := &server{
+		repository.NewUnitOfWork(db),
+		queryImpl.NewFabricQueryService(db),
+	}
+
+	router := transport.NewServeMux()
+	err := storeservice.RegisterStoreServiceHandlerServer(context.Background(), router, srv)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return cmd.LogMiddleware(router)
 }
