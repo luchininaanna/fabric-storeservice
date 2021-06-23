@@ -12,6 +12,19 @@ services:
       - ${STORE_PORT}:${STORE_PORT}
     depends_on:
       - storeservice_db
+      - storegrpcservice
+
+  storegrpcservice:
+    container_name: storegrpcservice
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.storegrpcservice
+    env_file:
+      - ../.env
+    ports:
+      - ${STORE_GRPC_PORT}:${STORE_GRPC_PORT}
+    depends_on:
+      - storeservice_db
 
   storeservice_db:
     image: mysql:8.0

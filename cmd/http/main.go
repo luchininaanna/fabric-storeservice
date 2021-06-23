@@ -38,7 +38,7 @@ func startServer(conf *config) *http.Server {
 
 	router := transport.Router(db)
 
-	srv := &http.Server{Addr: fmt.Sprintf(":%s", conf.ServerPort), Handler: router}
+	srv := &http.Server{Addr: fmt.Sprintf(":%d", conf.ServerPort), Handler: router}
 	go func() {
 		log.Fatal(srv.ListenAndServe())
 		log.Fatal(db.Close())

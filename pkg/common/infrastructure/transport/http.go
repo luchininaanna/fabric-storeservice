@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"storeservice/pkg/common/errors"
+	"storeservice/pkg/common/infrastructure"
 	"time"
 )
 
@@ -74,4 +75,9 @@ func CloseBody(body io.ReadCloser) {
 	if err != nil {
 		log.Error()
 	}
+}
+
+func CloseService(closer io.Closer, subject ...string) {
+	log.Infof("Close %v", subject)
+	infrastructure.Close(closer, subject...)
 }

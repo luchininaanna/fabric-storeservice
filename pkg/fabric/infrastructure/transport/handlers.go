@@ -80,10 +80,7 @@ func (s *server) GetFabrics(_ context.Context, empty *empty.Empty) (*storeservic
 }
 
 func Router(db *sql.DB) http.Handler {
-	srv := &server{
-		repository.NewUnitOfWork(db),
-		queryImpl.NewFabricQueryService(db),
-	}
+	srv := Server(db)
 
 	router := transport.NewServeMux()
 	err := storeservice.RegisterStoreServiceHandlerServer(context.Background(), router, srv)
@@ -92,4 +89,11 @@ func Router(db *sql.DB) http.Handler {
 	}
 
 	return cmd.LogMiddleware(router)
+}
+
+func Server(db *sql.DB) storeservice.StoreServiceServer {
+	return &server{
+		repository.NewUnitOfWork(db),
+		queryImpl.NewFabricQueryService(db),
+	}
 }
