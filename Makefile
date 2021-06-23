@@ -6,7 +6,6 @@ endif
 build: modules fmt proto lint test
 	go build -o ./bin/storeservice cmd/http/main.go
 	go build -o ./bin/storegrpcservice cmd/grpc/main.go
-	docker-compose -p storeservice -f docker/docker-compose.yml build
 
 fmt:
 	go fmt ./...
@@ -16,12 +15,6 @@ test:
 
 lint:
 	golangci-lint run
-
-up:
-	docker-compose -p storeservice -f docker/docker-compose.yml up -d
-
-down:
-	docker-compose -p storeservice -f docker/docker-compose.yml down
 
 db:
 	mysql -h 127.0.0.1 -u $(STORE_DATABASE_USER) -p$(STORE_DATABASE_PASSWORD) $(STORE_DATABASE_NAME)
