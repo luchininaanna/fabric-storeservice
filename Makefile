@@ -25,9 +25,6 @@ migrate_up:
 migrate_down:
 	migrate -database "$(STORE_DATABASE_DRIVER)://$(STORE_DATABASE_USER):$(STORE_DATABASE_PASSWORD)@tcp(localhost:3371)/$(STORE_DATABASE_NAME)" -path ./migrations down -all
 
-logs:
-	docker-compose -p storeservice -f docker/docker-compose.yml logs
-
 modules:
 	go mod tidy
 
